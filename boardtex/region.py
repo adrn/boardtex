@@ -2,11 +2,15 @@
 
 from __future__ import division, print_function
 
+# Standard library
+import os
+
 # Third-party
 from matplotlib import pyplot, cm
 import numpy as np
 import scipy as sp
 
+import Image
 from skimage.data import imread
 from skimage.color import rgb2grey
 from skimage.measure import regionprops
@@ -44,7 +48,7 @@ class NormalizedRegion(object):
 
     @classmethod
     def from_file(self, filename, shape=(64,64)):
-        image = imread(filename)
+        image = np.asarray(Image.open(filename))
         # image = -image-1
         return NormalizedRegion(image, shape=shape)
 
@@ -79,8 +83,12 @@ def save_regions(regions, path="", prefix=None, ext="png"):
         filename_base = '{prefix}-{index}.{ext}'
         
     for index, region in enumerate(regions):
-        sp.misc.imsave(filename_base.format(prefix=prefix, index=index, ext=ext), 
-                       -region.image+1)
+        filename = filename_base.format(prefix=prefix, index=index, ext=ext)
+        #sp.misc.imsave(filename_base.format(prefix=prefix, index=index, ext=ext), 
+        #               -region.image+1)
+        image_data = 255.*(-region.image+1)
+        im = Image.fromarray(image_data.astype(np.uint8))
+        im.save(os.path.join(path,filename))
 
 # class Region(object):
 #     
