@@ -13,7 +13,7 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import precision_score
 from sklearn.svm import SVC
 
-from symbols import symbol_to_idx
+from .symbols import symbol_to_idx
 
 # Function that accepts an image and a list of symbols and
 #   returns a list of Regions and an array of labels

@@ -8,7 +8,7 @@ from skimage.morphology import label
 from skimage.measure import regionprops
 from skimage.transform import resize
 
-from region import NormalizedRegion
+from .region import NormalizedRegion
 
 def to_binary(image, thresh=0.5, invert=True):
     image = rgb2grey(image)
