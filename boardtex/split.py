@@ -25,6 +25,9 @@ def to_binary(image, thresh=0.5, invert=True):
 def split(image, shape=(64,64)):
     """ Return a list of NormalizedRegion objects from a composite image. """
     
+    if isinstance(image, basestring):
+        image = imread(image)
+    
     bin_image = to_binary(image)
     clear_image = clear_border(bin_image)
     # We need the +1 to properly offset the labels for regionprops
