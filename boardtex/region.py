@@ -15,23 +15,34 @@ from skimage.transform import resize
 
 class NormalizedRegion(object):
 
-    props = [
-            'Area', 'ConvexArea', 'Eccentricity', 'EquivDiameter',
-            'Extent', 'FilledArea', 'Orientation', 'Perimeter', 'Solidity'
-    ]
+    props = ['Area', 'ConvexArea', 'Eccentricity', 'EquivDiameter',
+             'Extent', 'FilledArea', 'Orientation', 'Perimeter', 'Solidity']
 
-    def __init__(self, image, dim=64):
-        self.dim = dim
-        self.image = self._normalize(image)
+    def __init__(self, image_data, shape=(64,64)):
+        """ Given an array of image data around a single symbol, downsample to
+            the given shape, convert to a binary image, and extract a 
+            feature vector. 
+            
+            Parameters
+            ----------
+            image_data : array_like
+                A 2D array of image data.
+            shape : tuple (optional)
+                Downsample the image to this size.
+        """
+
+        self.image = self._normalize(image_data, shape)
         self.rprops = self._regionprops()
         self.features = self._features()
 
-    def _normalize(self, image):
-        image = resize(image, (self.dim,self.dim))
+    def _normalize(self, image, shape):
+        """ Downsample the image and convert to binary """
+        image = resize(image, shape)
         image = self._to_binary(image)
         return image
 
     def _to_binary(self, image, thresh=0.5, invert=False):
+        """ Threshold an image and convert to binary """
         image = rgb2grey(image)
         if invert:
             return np.asarray(image < thresh, dtype='int')
@@ -39,10 +50,10 @@ class NormalizedRegion(object):
             return np.asarray(image > thresh, dtype='int')
 
     @classmethod
-    def from_file(self, filename, dim=64):
+    def from_file(self, filename, shape=(64,64)):
         image = imread(filename)
         # image = -image-1
-        return NormalizedRegion(image, dim=dim)
+        return NormalizedRegion(image, shape=shape)
 
     def _regionprops(self):
         regions = regionprops(self.image, properties=self.props)
@@ -50,9 +61,7 @@ class NormalizedRegion(object):
 
     def _features(self):
         features = np.asarray(self.image.ravel(), dtype='float')
-        extra_features = []
-        for prop in self.props:
-            extra_features.append(self.rprops[prop])
+        extra_features = [self.rprops[prop] for prop in self.props]
         return np.append(features, extra_features)
 
     def show(self):
@@ -60,7 +69,7 @@ class NormalizedRegion(object):
 
 def save_regions(regions, prefix):
     for index, region in enumerate(regions):
-        sp.misc.imsave('%s-%s.jpg' % (prefix, index), -region.image+1)
+        sp.misc.imsave('{0}-{1}.png'.format(prefix, index), -region.image+1)
 
 # class Region(object):
 #     
