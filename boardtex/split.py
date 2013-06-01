@@ -20,11 +20,11 @@ def to_binary(image, thresh=0.5, invert=True):
     if invert:
         return np.asarray(image < thresh, dtype='int')
     else:
-        return np.asarray(image > thresh, dtype='int')
-        
+        return np.asarray(image > thresh, dtype='int')    
 
-def split(image, dim=64):
-    """Return a list of NormalizedRegion objects from a composite image."""
+def split(image, shape=(64,64)):
+    """ Return a list of NormalizedRegion objects from a composite image. """
+    
     bin_image = to_binary(image)
     clear_image = clear_border(bin_image)
     # We need the +1 to properly offset the labels for regionprops
