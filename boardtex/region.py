@@ -67,9 +67,27 @@ class NormalizedRegion(object):
     def show(self):
         pyplot.imshow(self.image, cmap=cm.Greys, interpolation='nearest')
 
-def save_regions(regions, prefix):
+def save_regions(regions, path="", prefix=None, ext="png"):
+    """ Save a list of regions out to disk as individual images. 
+    
+        Parameters
+        ----------
+        regions : iterable of Region objects
+        path : str (optional)
+            Path to save the images to. Default is current working directory.
+        prefix : str (optional)
+            Prefix for each filename.
+        ext : str (optional)
+            Type of image to write, e.g., png, jpg, tif.
+    """
+    if prefix is None:
+        filename_base = '{index}.{ext}' 
+    else:
+        filename_base = '{prefix}-{index}.{ext}'
+        
     for index, region in enumerate(regions):
-        sp.misc.imsave('{0}-{1}.png'.format(prefix, index), -region.image+1)
+        sp.misc.imsave(filename_base.format(prefix=prefix, index=index, ext=ext), 
+                       -region.image+1)
 
 # class Region(object):
 #     
