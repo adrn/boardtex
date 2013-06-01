@@ -18,7 +18,8 @@ class NormalizedRegion(object):
     def __init__(self, image, dim=64):
         self.dim = dim
         self.image = self._normalize(image)
-        self.rprops = self._regionprops(image)
+        self.rprops = self._regionprops()
+        self.features = self._features()
 
     def _normalize(self, image):
         image = resize(image, (self.dim,self.dim))
@@ -33,25 +34,28 @@ class NormalizedRegion(object):
             return np.asarray(image > thresh, dtype='int')
 
     @classmethod
-    def from_file(self, filename):
-        pass
+    def from_file(self, filename, dim=64):
+        image = imread(filename)
+        # image = -image-1
+        return NormalizedRegion(image, dim=dim)
 
-    def _regionprops(self, image):
-        regions = regionprops(image, properties=self.props)
+    def _regionprops(self):
+        regions = regionprops(self.image, properties=self.props)
         return regions[0]
 
-    @property
-    def features(self):
-        image_size = self.dim*self.dim
-        size = image_size + len(self.props)
-        features = np.zeros(size, dtype='float')
-        features[:image_size] = self.image
-        for i, prop in enumerate(self.props):
-            features[image_size+i] = self.rprops[prop]
-        return features
+    def _features(self):
+        features = np.asarray(self.image.ravel(), dtype='float')
+        extra_features = []
+        for prop in self.props:
+            extra_features.append(self.rprops[prop])
+        return np.append(features, extra_features)
 
     def show(self):
-        pyplot.imshow(self.image, cmap=cm.Greys)
+        pyplot.imshow(self.image, cmap=cm.Greys, interpolation='nearest')
+
+def save_regions(regions, prefix):
+    for index, region in enumerate(regions):
+        sp.misc.imsave('%s-%s.jpg' % (prefix, index), -region.image+1)
 
 # class Region(object):
 #     
