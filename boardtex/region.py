@@ -12,7 +12,6 @@ from skimage.color import rgb2grey
 from skimage.measure import regionprops
 from skimage.transform import resize
 
-
 class NormalizedRegion(object):
 
     props = ['Area', 'ConvexArea', 'Eccentricity', 'EquivDiameter',
@@ -37,17 +36,11 @@ class NormalizedRegion(object):
 
     def _normalize(self, image, shape):
         """ Downsample the image and convert to binary """
+        from .split import to_binary
+        
         image = resize(image, shape)
-        image = self._to_binary(image)
+        image = to_binary(image)
         return image
-
-    def _to_binary(self, image, thresh=0.5, invert=False):
-        """ Threshold an image and convert to binary """
-        image = rgb2grey(image)
-        if invert:
-            return np.asarray(image < thresh, dtype='int')
-        else:
-            return np.asarray(image > thresh, dtype='int')
 
     @classmethod
     def from_file(self, filename, shape=(64,64)):
