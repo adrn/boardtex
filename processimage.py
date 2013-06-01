@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as sp
 
 from skimage.data import imread
 from skimage.color import rgb2grey
@@ -16,9 +17,9 @@ def to_binary(image, thresh=0.5, invert=True):
         
 
 def split(image):
-    image = to_binary(image)
-    image = clear_border(image)
-    label_image = label(image, background=0)
+    clear_image = clear_border(image)
+    # We need the +1 to properly offset the labels for regionprops
+    label_image = label(clear_image, background=0)+1
     props = [
         'Image', 'BoundingBox', 'Centroid', 'Area',
     ]
@@ -35,6 +36,10 @@ def normalize_region(region, dim=64):
     ]
     regions = regionprops(image, properties=props)
     return regions[1]
+
+def save_regions(regions, prefix):
+    for index, region in enumerate(regions):
+        sp.misc.imsave('%s-%s.jpg' % (prefix, index), -region['Image']+1)
 
 
     
