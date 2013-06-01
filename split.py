@@ -8,6 +8,8 @@ from skimage.morphology import label
 from skimage.measure import regionprops
 from skimage.transform import resize
 
+from region import NormalizedRegion
+
 def to_binary(image, thresh=0.5, invert=True):
     image = rgb2grey(image)
     if invert:
@@ -16,32 +18,15 @@ def to_binary(image, thresh=0.5, invert=True):
         return np.asarray(image > thresh, dtype='int')
         
 
-def split(image):
-    clear_image = clear_border(image)
+def split(image, dim=64):
+    """Return a list of NormalizedRegion objects from a composite image."""
+    bin_image = to_binary(image)
+    clear_image = clear_border(bin_image)
     # We need the +1 to properly offset the labels for regionprops
     label_image = label(clear_image, background=0)+1
     props = [
         'Image', 'BoundingBox', 'Centroid', 'Area',
     ]
     regions = regionprops(label_image, properties=props)
+    regions = [NormalizedRegion(region['Image'], dim=dim) for region in regions]
     return regions
-
-def normalize_region(region, dim=64):
-    image = region['Image']
-    image = resize(image, (dim,dim))
-    image = to_binary(image)
-    props = [
-        'Image', 'Area', 'Centroid', 'ConvexArea', 'Eccentricity', 'EquivDiameter',
-        'Extent', 'FilledArea', 'Orientation', 'Perimeter', 'Solidity'
-    ]
-    regions = regionprops(image, properties=props)
-    return regions[1]
-
-def save_regions(regions, prefix):
-    for index, region in enumerate(regions):
-        sp.misc.imsave('%s-%s.jpg' % (prefix, index), -region['Image']+1)
-
-
-    
-    
-
