@@ -2,11 +2,14 @@
 
 from __future__ import division, print_function
 
+# Standard library
+import os
+
 # Third-party
 import numpy as np
 import scipy as sp
 
-from skimage.data import imread
+import Image
 from skimage.color import rgb2grey
 from skimage.segmentation import clear_border
 from skimage.morphology import label
@@ -26,7 +29,7 @@ def split(image, shape=(64,64)):
     """ Return a list of NormalizedRegion objects from a composite image. """
     
     if isinstance(image, basestring):
-        image = imread(image)
+        image = np.asarray(Image.open(image))
     
     bin_image = to_binary(image)
     clear_image = clear_border(bin_image)
