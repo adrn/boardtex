@@ -1,3 +1,8 @@
+# coding: utf-8
+
+from __future__ import division, print_function
+
+# Third-party
 from matplotlib import pyplot, cm
 import numpy as np
 import scipy as sp
