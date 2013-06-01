@@ -33,5 +33,5 @@ def split(image, shape=(64,64)):
         'Image', 'BoundingBox', 'Centroid', 'Area',
     ]
     regions = regionprops(label_image, properties=props)
-    regions = [NormalizedRegion(region['Image'], dim=dim) for region in regions]
+    regions = [NormalizedRegion(region['Image'], shape=shape) for region in regions]
     return regions
