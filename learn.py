@@ -28,7 +28,7 @@ def image_to_training_data(filename, symbols):
     sort_idx = [i[0] for i in sorted(enumerate(coordinates), key=lambda x:x[1])]
     
     # extract the features in order
-    data = np.array([regions[i].features for i in sort_idx])
+    data = np.array([NormalizedRegion(regions[i]).features for i in sort_idx])
     
     if len(data) != len(labels):
         raise ValueError("Found {0} regions in file {1}, but expected "
