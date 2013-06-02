@@ -34,11 +34,13 @@ def split(image, shape=(64,64)):
     
     bin_image = to_binary(image)
     clear_image = clear_border(bin_image)
+    
     # We need the +1 to properly offset the labels for regionprops
-    label_image = label(clear_image, background=0)+1
+    label_image = label(clear_image, background=0) + 1
     props = [
         'Image', 'BoundingBox', 'Centroid', 'Area',
     ]
     regions = regionprops(label_image, properties=props)
-    regions = [NormalizedRegion(region['Image'], shape=shape) for region in regions]
+    regions = [NormalizedRegion(region['Image'], shape=shape) \
+                for region in regions]
     return regions
