@@ -29,7 +29,7 @@ def split(image, shape=(64,64)):
     """ Return a list of NormalizedRegion objects from a composite image. """
     
     if isinstance(image, basestring):
-        image = np.asarray(Image.open(image))
+        image = imread(image)
     
     bin_image = to_binary(image)
     clear_image = clear_border(bin_image)

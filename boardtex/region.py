@@ -48,7 +48,7 @@ class NormalizedRegion(object):
 
     #@classmethod
     #def from_file(self, filename, shape=(64,64)):
-    #    image = np.flipud(np.asarray(Image.open(filename)))
+    #    image = imread(filename)
     #    # image = -image-1
     #    return NormalizedRegion(image, shape=shape)
 
