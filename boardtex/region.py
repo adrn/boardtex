@@ -46,11 +46,11 @@ class NormalizedRegion(object):
         image = to_binary(image)
         return image
 
-    @classmethod
-    def from_file(self, filename, shape=(64,64)):
-        image = np.asarray(Image.open(filename))
-        # image = -image-1
-        return NormalizedRegion(image, shape=shape)
+    #@classmethod
+    #def from_file(self, filename, shape=(64,64)):
+    #    image = np.flipud(np.asarray(Image.open(filename)))
+    #    # image = -image-1
+    #    return NormalizedRegion(image, shape=shape)
 
     def _regionprops(self):
         regions = regionprops(self.image, properties=self.props)
