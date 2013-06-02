@@ -10,6 +10,7 @@ import numpy as np
 import scipy as sp
 
 import Image
+from skimage.data import imread
 from skimage.color import rgb2grey
 from skimage.segmentation import clear_border
 from skimage.morphology import label
